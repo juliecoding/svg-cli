@@ -2,7 +2,7 @@ package main
 
 import (
 	"os"
-	"github.com/juliecoding/svg-fun-go2/cli"
+	"github.com/juliecoding/svg-cli/cli"
 )
 
 func main() {

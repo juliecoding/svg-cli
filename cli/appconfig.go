@@ -2,6 +2,9 @@ package cli
 
 import (
 	"flag"
+	"fmt"
+	"io/fs"
+	"path/filepath"
 	"strings"
 )
 
@@ -44,14 +47,23 @@ func getConfig() appConfig {
 func (ac *appConfig) validateIn() {
 	// Check if it's a real file and we can open it.
 	msgEmpty := "Please provide an input filepath:"
-	// msgBad := fmt.Sprintf("The input filepath you provided,\n    %q\n , doesn't look valid. Please provide a different filepath:", ac.in)
+	msgInvalid := fmt.Sprintf("The input filepath you provided, %q, doesn't look valid.\nPlease provide a different filepath:", ac.in)
+	msgAbsolute := fmt.Sprintf("An error occurred converting the relative input path %q to an absolute path.\nConsider providing an absolute path to the input file:", ac.in)
 	if ac.in == "" {
 		ac.in = getUserInput(msgEmpty)
 		// JAK implement retry logic
 		ac.validateIn()
 	}
-	// JAK, Run an fs "valid" check
-	// ac.in = getUserInput(msgBad)
+	if !fs.ValidPath(ac.in) {
+		ac.in = getUserInput(msgInvalid)
+	}
+	abs, err := filepath.Abs(ac.in)
+	if (err != nil) {
+		ac.in = getUserInput(msgAbsolute)
+	} else {
+		ac.in = abs
+		fmt.Println("HEEEY" + ac.in)
+	}
 }
 
 
@@ -62,6 +74,10 @@ func (ac *appConfig) validateOut() {
 		ac.out = getUserInput(msgEmpty)
 		ac.validateOut()
 	}
-	// JAK, if it doesn't end with .svg (or maybe .xml), reject it
+	extension := filepath.Ext(ac.out)
+	if extension != "svg" && extension != "xml" {
+		outputError("Changing output file extension to '.svg'", nil)
+		ac.out = ac.out + ".svg"
+	}
 	// JAK, add option to change to avoid overwrites
 }
