@@ -25,6 +25,9 @@ func (s *selectedFilters) String() string {
 
 
 func (s *selectedFilters) Set(str string) error {
+	if str == "" {
+		return nil
+	}
 	spl := strings.Split(str, " ")
 	*s = append(*s, spl...)
 	return nil
@@ -49,11 +52,13 @@ func (ac *appConfig) validateIn() {
 	msgEmpty := "Please provide an input filepath:"
 	msgInvalid := fmt.Sprintf("The input filepath you provided, %q, doesn't look valid.\nPlease provide a different filepath:", ac.in)
 	msgAbsolute := fmt.Sprintf("An error occurred converting the relative input path %q to an absolute path.\nConsider providing an absolute path to the input file:", ac.in)
+
 	if ac.in == "" {
 		ac.in = getUserInput(msgEmpty)
 		// JAK implement retry logic
 		ac.validateIn()
 	}
+	ac.in = filepath.Clean(ac.in)
 	if !fs.ValidPath(ac.in) {
 		ac.in = getUserInput(msgInvalid)
 	}
@@ -62,7 +67,6 @@ func (ac *appConfig) validateIn() {
 		ac.in = getUserInput(msgAbsolute)
 	} else {
 		ac.in = abs
-		fmt.Println("HEEEY" + ac.in)
 	}
 }
 
@@ -75,7 +79,7 @@ func (ac *appConfig) validateOut() {
 		ac.validateOut()
 	}
 	extension := filepath.Ext(ac.out)
-	if extension != "svg" && extension != "xml" {
+	if extension != ".svg" && extension != ".xml" {
 		outputError("Changing output file extension to '.svg'", nil)
 		ac.out = ac.out + ".svg"
 	}

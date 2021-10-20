@@ -39,13 +39,21 @@ func (a *app) op() {
 	a.canvas.Def()
 	a.applyFilters()
 	a.canvas.DefEnd()
-	a.canvas.Image(0, 0, d.width, d.height, a.config.in, `filter="url(#__filters)"`)
+
+	if len(a.config.selected) > 0 {
+		a.canvas.Image(0, 0, d.width, d.height, a.config.in, `filter="url(#__filters)`)
+	} else {
+		a.canvas.Image(0, 0, d.width, d.height, a.config.in)
+	}
 	a.canvas.End()
 	// Could have the program automatically open the file in a browser
 }
 
 
 func (a *app) applyFilters() {
+	if len(a.config.selected) == 0 {
+		return
+	}
 	a.canvas.Filter("__filters")
 	// Loop through selected filters and apply them
 	for _, s := range a.config.selected {
