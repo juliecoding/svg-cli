@@ -1,4 +1,4 @@
-package cli
+package main
 
 import (
     "testing"
@@ -13,9 +13,9 @@ func TestRun(t *testing.T) {
     // if !want.MatchString(msg) || err != nil {
     //     t.Fatalf(`Hello("Gladys") = %q, %v, want match for %#q, nil`, msg, err, want)
     // }
-	
+
 	// input = [ '', '', '' ]
-	
+
 	// app, err = cli.Run(input)
 	// if (app.____  != _____ ||
 		// 	app._____ != ""
