@@ -1,0 +1,13 @@
+{
+    "bw": {
+        "name": "bw",
+        "element": "FeColorMatrixSaturate",
+        "filterspec": {
+            "In": "SourceGraphic"
+        },
+        "props": {
+            "values": "0.3",
+            "type": "saturate"
+        }
+    }
+}

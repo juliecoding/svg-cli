@@ -6,11 +6,13 @@ import (
 	"os"
 )
 
-func Run(args []string) int {
-	fmt.Println(args)
+func Run() int {
 	// Conventionally, for os.Exit, code zero indicates success,
 	// non-zero an error.
-	var a app
+	var a = app{
+		filters: initFilters(),
+		config: getConfig(),
+	}
 	a.op()
 	return 0
 }
@@ -22,7 +24,7 @@ func getUserInput(prompt string) string {
 	return scanner.Text()
 }
 
-func outputError(explanation string, err error) {
+func output(explanation string, err error) {
 	fmt.Println(explanation)
 	if err != nil {
 		fmt.Println(err)

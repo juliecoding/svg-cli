@@ -14,15 +14,12 @@ type appConfig struct {
 	out	string
 }
 
-
 // Because this is a custom flag Var, we have to implement String and Set methods
 type selectedFilters []string
-
 
 func (s *selectedFilters) String() string {
 	return strings.Join(*s, " ")
 }
-
 
 func (s *selectedFilters) Set(str string) error {
 	if str == "" {
@@ -55,7 +52,6 @@ func (ac *appConfig) validateIn() {
 
 	if ac.in == "" {
 		ac.in = getUserInput(msgEmpty)
-		// JAK implement retry logic
 		ac.validateIn()
 	}
 	ac.in = filepath.Clean(ac.in)
@@ -63,7 +59,7 @@ func (ac *appConfig) validateIn() {
 		ac.in = getUserInput(msgInvalid)
 	}
 	abs, err := filepath.Abs(ac.in)
-	if (err != nil) {
+	if err != nil {
 		ac.in = getUserInput(msgAbsolute)
 	} else {
 		ac.in = abs
@@ -74,14 +70,12 @@ func (ac *appConfig) validateIn() {
 func (ac *appConfig) validateOut() {
 	msgEmpty := "Please provide an output filepath:"
 	if ac.out == "" {
-		// JAK implement retry logic
 		ac.out = getUserInput(msgEmpty)
 		ac.validateOut()
 	}
 	extension := filepath.Ext(ac.out)
 	if extension != ".svg" && extension != ".xml" {
-		outputError("Changing output file extension to '.svg'", nil)
+		output("Changing output file extension to '.svg'", nil)
 		ac.out = ac.out + ".svg"
 	}
-	// JAK, add option to change to avoid overwrites
 }
