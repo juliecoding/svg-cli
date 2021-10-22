@@ -15,14 +15,14 @@ func initFilters() map[string]filterFunc {
 		"carlton": carlton,
 		"dawn":	dawn,
 		"desaturate": desaturate,
-		"dusk": dusk,
+		"day": day,
 		"fuzzyTv": fuzzyTv,
 		"ginza": ginza,
 		"hueRotate": hueRotate,
 		"instagram": instagram,
 		"matrix": matrix,
 		"montyPython": montyPython,
-		"night": night,
+		"dusk": dusk,
 		"pointLight": pointLight,
 		"saturate": saturate,
 		"sepia": sepia,
@@ -61,9 +61,9 @@ func desaturate(canvas svg.SVG) {
 	canvas.FeColorMatrixSaturate(fs, 0.3)
 }
 
-func dusk(canvas svg.SVG) {
-	result := "dusk"
-	floodId := "__duskFlood"
+func day(canvas svg.SVG) {
+	result := "day"
+	floodId := "__dayFlood"
 	floodSpec := svg.Filterspec{ Result: result }
 	blendSpec := svg.Filterspec{ In2: result, In: "SourceGraphic" }
 	canvas.FeFlood(floodSpec, "#e3b249", 0.1, fmt.Sprintf(`id="%s"`, floodId))
@@ -105,14 +105,23 @@ func matrix(canvas svg.SVG) {
 }
 
 func montyPython(canvas svg.SVG) {
+	cm := map[string]string{
+		"red": "#ed190e",
+		"orange": "#ed890e",
+		"yellow": "#faf564",
+		"green": "#20bf1b",
+		"blue": "#1b70bf",
+		"purple": "#781bbf",
+		"pink": "#eb28a6",
+	}
 	fs := svg.Filterspec{ Result: "montyPython" }
-	color := getUserInput("What is your favorite color?! (I'm a witch, so in Hex, please!)")
-	canvas.FeFlood(fs, color, 0.5)
+	color := getUserInput("What is your favorite color?!")
+	canvas.FeFlood(fs, cm[color], 0.5)
 }
 
-func night(canvas svg.SVG) {
-	result := "night"
-	floodId := "__nightFlood"
+func dusk(canvas svg.SVG) {
+	result := "dusk"
+	floodId := "__duskFlood"
 	floodSpec := svg.Filterspec{ Result: result }
 	blendSpec := svg.Filterspec{ In2: result, In: "SourceGraphic" }
 	canvas.FeFlood(floodSpec, "#090f36", 0.95, fmt.Sprintf(`id="%s"`, floodId))
@@ -151,4 +160,4 @@ func sunshine(canvas svg.SVG) {
 	canvas.FeSpecEnd()
 }
 
-// pointLight saturate sepia blur dawn desaturate dusk fuzzyTv ginza hueRotate matrix night
+// pointLight saturate sepia blur dawn desaturate dusk fuzzyTv ginza hueRotate matrix night carlton

@@ -14,35 +14,18 @@ type appConfig struct {
 	out	string
 }
 
-// Because this is a custom flag Var, we have to implement String and Set methods
-type selectedFilters []string
-
-func (s *selectedFilters) String() string {
-	return strings.Join(*s, " ")
-}
-
-func (s *selectedFilters) Set(str string) error {
-	if str == "" {
-		return nil
-	}
-	spl := strings.Split(str, " ")
-	*s = append(*s, spl...)
-	return nil
-}
-
-
 func getConfig() appConfig {
 	var ac appConfig
-	flag.StringVar(&ac.out, "out", "./out/img.svg", "Path to SVG output")
+	flag.StringVar(&ac.out, "out", "./out/out.svg", "Path to SVG output")
 	flag.StringVar(&ac.in, "in", "", "Path to access input image")
-	flag.Var(&ac.selected, "filters", "Name of filters from the filters.json file to apply to the input file.")
+	flag.Var(&ac.selected, "filters", "Name of filters from the filters.json file to apply to the input file.\nPossible values are: blur, bw, carlton, desaturate, day, fuzzyTv, ginza, hueRotate, instagram, matrix, montyPython, dusk, pointLight, saturate, sepia, sunshine")
+	// After all flags are defined, calling Parse parses the command line into the defined flags.
 	flag.Parse()
 	ac.validateOut()
 	ac.validateIn()
 
 	return ac
 }
-
 
 func (ac *appConfig) validateIn() {
 	// Check if it's a real file and we can open it.
@@ -78,4 +61,20 @@ func (ac *appConfig) validateOut() {
 		output("Changing output file extension to '.svg'", nil)
 		ac.out = ac.out + ".svg"
 	}
+}
+
+// Because this is a custom flag Var, we have to implement String and Set methods
+type selectedFilters []string
+
+func (s *selectedFilters) String() string {
+	return strings.Join(*s, " ")
+}
+
+func (s *selectedFilters) Set(str string) error {
+	if str == "" {
+		return nil
+	}
+	spl := strings.Split(str, " ")
+	*s = append(*s, spl...)
+	return nil
 }
