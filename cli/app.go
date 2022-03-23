@@ -6,22 +6,22 @@ import (
 	"os"
 
 	svg "github.com/ajstarks/svgo"
+	uuid "github.com/google/uuid"
 	browser "github.com/pkg/browser"
 )
 
-
 type app struct {
 	filters map[string]filterFunc
-	config appConfig
-	canvas *svg.SVG
+	config  appConfig
+	canvas  *svg.SVG
 }
 
 type dimensions struct {
-	width int
+	width  int
 	height int
 }
 
-func (a *app) op() {
+func (a *app) op() int {
 	d := a.getDimensions()
 	w := a.getWriter()
 	a.canvas = svg.New(w)
@@ -37,8 +37,9 @@ func (a *app) op() {
 	}
 	a.canvas.End()
 	browser.OpenFile(a.config.out)
+	// Success int
+	return 0
 }
-
 
 func (a *app) applyFilters() {
 	if len(a.config.selected) == 0 {

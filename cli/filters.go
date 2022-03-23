@@ -6,6 +6,14 @@ import (
 	svg "github.com/ajstarks/svgo"
 )
 
+type filt struct {
+	description	string
+	apply		applyFunc
+}
+
+type applyFunc func(svg.SVG)
+
+
 type filterFunc func(svg.SVG)
 
 func initFilters() map[string]filterFunc {
@@ -30,11 +38,83 @@ func initFilters() map[string]filterFunc {
 	}
 }
 
+func initFilters2() map[string]filt {
+	return map[string]filt{
+		"blur": {
+			"Makes image appear less sharp and defined",
+			blur,
+		},
+		"bw": {
+			"Changes image to black and white",
+			bw,
+		},
+		"carlton": {
+			"Did someone say happy dance?",
+			carlton,
+		},
+		"dawn":	{
+			"Animated. Gradually lightens and adds warm tones to image",
+			dawn,
+		},
+		"desaturate": {
+			"Mutes colors in an image",
+			desaturate,
+		},
+		"day": {
+			"Animated. Gradually brightens an image",
+			day,
+		},
+		"fuzzyTv": {
+			"Sharpens but distorts image",
+			fuzzyTv,
+		},
+		"ginza": {
+			"Based on the Instagram filter. Adds a warm glow to photos",
+			ginza,
+		},
+		"hueRotate": {
+			"Changes colors to their complement (e.g., red to green)",
+			hueRotate,
+		},
+		"instagram": {
+			"Makes viewers envious",
+			instagram,
+		},
+		"matrix": {
+			"Adds a cascading gif",
+			matrix,
+		},
+		"montyPython": {
+			"You may or may not expect it",
+			montyPython,
+		},
+		"dusk": {
+			"Animated. Gradually darkens and adds cool tones to image",
+			dusk,
+		},
+		"pointLight": {
+			"Adds a spotlight to upper corner of the image, a little like a lens flare",
+			pointLight,
+		},
+		"saturate": {
+			"Heightens colors",
+			saturate,
+		},
+		"sepia": {
+			"Makes image brown-toned",
+			sepia,
+		},
+		"sunshine": {
+			"Katrina's walking on it",
+			sunshine,
+		},
+	}
+}
+
 func blur(canvas svg.SVG) {
 	fs := svg.Filterspec{ In: "SourceGraphic", Result: "blur" }
 	canvas.FeGaussianBlur(fs, 3, 3)
 }
-
 
 func bw(canvas svg.SVG) {
 	fs := svg.Filterspec{ In: "SourceGraphic", Result: "bw" }

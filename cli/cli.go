@@ -7,14 +7,11 @@ import (
 )
 
 func Run() int {
-	// Conventionally, for os.Exit, code zero indicates success,
-	// non-zero an error.
 	var a = app{
 		filters: initFilters(),
-		config: getConfig(),
+		config:  getConfig(),
 	}
-	a.op()
-	return 0
+	return a.op()
 }
 
 func getUserInput(prompt string) string {

@@ -14,5 +14,7 @@ import (
 )
 
 func main() {
+	// Conventionally, for os.Exit, code zero indicates success,
+	// non-zero an error.
     os.Exit(cli.Run())
 }

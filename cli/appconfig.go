@@ -3,7 +3,6 @@ package cli
 import (
 	"flag"
 	"fmt"
-	"io/fs"
 	"path/filepath"
 	"strings"
 )
@@ -12,55 +11,6 @@ type appConfig struct {
 	selected selectedFilters
 	in	string
 	out	string
-}
-
-func getConfig() appConfig {
-	var ac appConfig
-	flag.StringVar(&ac.out, "out", "./out/out.svg", "Path to SVG output")
-	flag.StringVar(&ac.in, "in", "", "Path to access input image")
-	flag.Var(&ac.selected, "filters", "Name of filters from the filters.json file to apply to the input file.\nPossible values are: blur, bw, carlton, desaturate, day, fuzzyTv, ginza, hueRotate, instagram, matrix, montyPython, dusk, pointLight, saturate, sepia, sunshine")
-	// After all flags are defined, calling Parse parses the command line into the defined flags.
-	flag.Parse()
-	ac.validateOut()
-	ac.validateIn()
-
-	return ac
-}
-
-func (ac *appConfig) validateIn() {
-	// Check if it's a real file and we can open it.
-	msgEmpty := "Please provide an input filepath:"
-	msgInvalid := fmt.Sprintf("The input filepath you provided, %q, doesn't look valid.\nPlease provide a different filepath:", ac.in)
-	msgAbsolute := fmt.Sprintf("An error occurred converting the relative input path %q to an absolute path.\nConsider providing an absolute path to the input file:", ac.in)
-
-	if ac.in == "" {
-		ac.in = getUserInput(msgEmpty)
-		ac.validateIn()
-	}
-	ac.in = filepath.Clean(ac.in)
-	if !fs.ValidPath(ac.in) {
-		ac.in = getUserInput(msgInvalid)
-	}
-	abs, err := filepath.Abs(ac.in)
-	if err != nil {
-		ac.in = getUserInput(msgAbsolute)
-	} else {
-		ac.in = abs
-	}
-}
-
-
-func (ac *appConfig) validateOut() {
-	msgEmpty := "Please provide an output filepath:"
-	if ac.out == "" {
-		ac.out = getUserInput(msgEmpty)
-		ac.validateOut()
-	}
-	extension := filepath.Ext(ac.out)
-	if extension != ".svg" && extension != ".xml" {
-		output("Changing output file extension to '.svg'", nil)
-		ac.out = ac.out + ".svg"
-	}
 }
 
 // Because this is a custom flag Var, we have to implement String and Set methods
@@ -77,4 +27,53 @@ func (s *selectedFilters) Set(str string) error {
 	spl := strings.Split(str, " ")
 	*s = append(*s, spl...)
 	return nil
+}
+
+func getConfig() appConfig {
+	var ac appConfig
+	flag.StringVar(&ac.out, "out", "./out/out.svg", "Path to SVG output")
+	flag.StringVar(&ac.in, "in", "", "Path to access input image")
+	flag.Var(&ac.selected, "filters", "Name of filters from the filters.json file to apply to the input file, separated by spaces.\nPossible values are: blur, bw, carlton, desaturate, day, fuzzyTv, ginza, hueRotate, instagram, matrix, montyPython, dusk, pointLight, saturate, sepia, sunshine")
+	// After all flags are defined, calling Parse parses the command line input into the defined flags.
+	flag.Parse()
+	ac.in = getValidInput(ac.in)
+	ac.out = getValidOutput(ac.out)
+	// ac.selected = getValidSelected(ac.selected)
+
+	return ac
+}
+
+
+func getValidInput(in string) string {
+	msgEmpty := "Please provide an input filepath:"
+	msgAbsolute := fmt.Sprintf("An error occurred converting the relative input path %q to an absolute path.\nConsider providing an absolute path to the input file.", in)
+
+	if in == "" {
+		in = getUserInput(msgEmpty)
+		return getValidInput(in)
+	}
+	if filepath.IsAbs(in) {
+		return in
+	}
+	abs, err := filepath.Abs(in)
+	if err != nil {
+		output(msgAbsolute, err)
+		return getValidInput("")
+	}
+	return abs
+}
+
+
+func getValidOutput(out string) string {
+	msgEmpty := "Please provide an output filepath:"
+	if out == "" {
+		out = getUserInput(msgEmpty)
+		return getValidOutput(out)
+	}
+	extension := filepath.Ext(out)
+	if extension == ".svg" || extension == ".xml" {
+		return out
+	}
+	output("Changing output file extension to '.svg'", nil)
+	return out + ".svg"
 }
