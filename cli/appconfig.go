@@ -2,8 +2,6 @@ package cli
 
 import (
 	"flag"
-	"fmt"
-	"path/filepath"
 	"strings"
 )
 
@@ -41,39 +39,4 @@ func getConfig() appConfig {
 	// ac.selected = getValidSelected(ac.selected)
 
 	return ac
-}
-
-
-func getValidInput(in string) string {
-	msgEmpty := "Please provide an input filepath:"
-	msgAbsolute := fmt.Sprintf("An error occurred converting the relative input path %q to an absolute path.\nConsider providing an absolute path to the input file.", in)
-
-	if in == "" {
-		in = getUserInput(msgEmpty)
-		return getValidInput(in)
-	}
-	if filepath.IsAbs(in) {
-		return in
-	}
-	abs, err := filepath.Abs(in)
-	if err != nil {
-		output(msgAbsolute, err)
-		return getValidInput("")
-	}
-	return abs
-}
-
-
-func getValidOutput(out string) string {
-	msgEmpty := "Please provide an output filepath:"
-	if out == "" {
-		out = getUserInput(msgEmpty)
-		return getValidOutput(out)
-	}
-	extension := filepath.Ext(out)
-	if extension == ".svg" || extension == ".xml" {
-		return out
-	}
-	output("Changing output file extension to '.svg'", nil)
-	return out + ".svg"
 }

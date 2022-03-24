@@ -13,7 +13,6 @@ type filt struct {
 
 type applyFunc func(svg.SVG)
 
-
 type filterFunc func(svg.SVG)
 
 func initFilters() map[string]filterFunc {
