@@ -18,10 +18,10 @@ type xcanvas struct {
 // JAK, try to streamline what you're doing with the img path so you don't have to pass it around so much.
 // The imperative nature of the lib is a challenge.
 // Do more error handling.
-func (x *xcanvas) createCanvas(s selectedFilters, imgPath string) error {
+func (x *xcanvas) createCanvas(selectedFilters []string, imgPath string) error {
 	x.canvas.Start(x.d.width, x.d.height)
-	if len(s) > 0 {
-		x.applyFilters(s, imgPath)
+	if len(selectedFilters) > 0 {
+		x.applyFilters(selectedFilters, imgPath)
 	} else {
 		x.canvas.Image(0, 0, x.d.width, x.d.height, imgPath)
 	}
@@ -29,7 +29,7 @@ func (x *xcanvas) createCanvas(s selectedFilters, imgPath string) error {
 	return nil
 }
 
-func (x *xcanvas) applyFilters(s selectedFilters, imgPath string) {
+func (x *xcanvas) applyFilters(selectedFilters []string, imgPath string) {
 	x.canvas.Def()
 	ids := x.addFilters()
 	x.canvas.DefEnd()

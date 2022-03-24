@@ -6,6 +6,7 @@ import (
 	"image"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func getUserInput(prompt string) string {
@@ -53,6 +54,15 @@ func getValidOutput(out string) string {
 	}
 	output("Changing output file extension to '.svg'", nil)
 	return out + ".svg"
+}
+
+// JAK, would it be better to take in the string?
+func confirmSelectedFilters(sf []string) []string {
+	filterStr := ""
+	if len(sf) == 0 {
+		filterStr = getUserInput("Which filters would you like to apply? \nPossible values are: blur, bw, carlton, desaturate, day, fuzzyTv, ginza, hueRotate, instagram, matrix, montyPython, dusk, pointLight, saturate, sepia, sunshine.\nTo apply no filters, press enter.")
+	}
+	return strings.Split(filterStr, " ")
 }
 
 func getWriter(path string) (*os.File, error) {
