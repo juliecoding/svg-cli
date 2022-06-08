@@ -3,7 +3,7 @@ package cli
 func Run() int {
 	var a = app{
 		filters: initFilters(),
-		config:  getConfig(),
+		config:  initConfig(),
 	}
 	return a.op()
 }

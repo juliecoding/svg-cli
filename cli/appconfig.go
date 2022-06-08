@@ -12,7 +12,7 @@ type appConfig struct {
 	selected	[]string
 }
 
-func getConfig() appConfig {
+func initConfig() appConfig {
 	outDesc			:= "Path to SVG output"
 	inDesc			:= "Path to access input image"
 	selectedStrDesc := "Name of filters from the filters.json file to apply to the input file, separated by spaces.\nPossible values are: blur, bw, carlton, desaturate, day, fuzzyTv, ginza, hueRotate, instagram, matrix, montyPython, dusk, pointLight, saturate, sepia, sunshine"
@@ -22,12 +22,14 @@ func getConfig() appConfig {
 	flag.StringVar(&ac.in, "in", "", inDesc)
 	flag.StringVar(&ac.selectedStr, "filters", "", selectedStrDesc)
 
-	// After all flags are defined, calling Parse parses the command line input into the defined flags.
+	// After all flags are defined, calling Parse parses
+	// the command line input into the defined flags.
 	flag.Parse()
 
 	ac.in = getValidInput(ac.in)
 	ac.out = getValidOutput(ac.out)
-	ac.selected = confirmSelectedFilters(strings.Split(ac.selectedStr, " "))
+	// JAK, change to validateFilters
+	ac.selected = selectFilters(strings.Split(ac.selectedStr, " "))
 
 	return ac
 }

@@ -23,6 +23,7 @@ func output(explanation string, err error) {
 	}
 }
 
+// JAK, confirm verb you want to use here
 func getValidInput(in string) string {
 	msgEmpty := "Please provide an input filepath:"
 	msgAbsolute := fmt.Sprintf("An error occurred converting the relative input path %q to an absolute path.\nConsider providing an absolute path to the input file.", in)
@@ -56,8 +57,10 @@ func getValidOutput(out string) string {
 	return out + ".svg"
 }
 
+func validateFilters() {}
+
 // JAK, would it be better to take in the string?
-func confirmSelectedFilters(sf []string) []string {
+func selectFilters(sf []string) []string {
 	filterStr := ""
 	if len(sf) == 0 {
 		filterStr = getUserInput("Which filters would you like to apply? \nPossible values are: blur, bw, carlton, desaturate, day, fuzzyTv, ginza, hueRotate, instagram, matrix, montyPython, dusk, pointLight, saturate, sepia, sunshine.\nTo apply no filters, press enter.")
@@ -65,7 +68,7 @@ func confirmSelectedFilters(sf []string) []string {
 	return strings.Split(filterStr, " ")
 }
 
-func getWriter(path string) (*os.File, error) {
+func initWriter(path string) (*os.File, error) {
 	w, err := os.Create(path)
 	if err != nil {
 		output(fmt.Sprintf("There was an issue creating the file %s", path), err)

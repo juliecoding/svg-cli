@@ -12,7 +12,7 @@ type app struct {
 
 func (a *app) op() int {
 	d, err := getDimensions(a.config.in)
-	if (err != nil) {
+	if err != nil {
 		a.config.in = getValidInput("")
 		d, err = getDimensions(a.config.in)
 		if err != nil {
@@ -21,10 +21,10 @@ func (a *app) op() int {
 		}
 	}
 
-	w, err := getWriter(a.config.out)
-	if (err != nil) {
+	w, err := initWriter(a.config.out)
+	if err != nil {
 		a.config.out = getValidOutput("")
-		w, err = getWriter(a.config.out)
+		w, err = initWriter(a.config.out)
 		if err != nil {
 			output("Exiting due to issues with output file", err)
 			return 1
@@ -32,9 +32,9 @@ func (a *app) op() int {
 	}
 
 	var x = xcanvas{ svg.New(w), d }
-	err = x.createCanvas(a.config.selected, a.config.in)
+	err = x.drawCanvas(a.config.selected, a.config.in)
 	if err != nil {
-		output("Bummer! Quitting due to an error encountered while creating your SVG", err)
+		output("Bummer! Exiting due to an error encountered while creating your SVG", err)
 		return 1
 	}
 	browser.OpenFile(a.config.out)
